@@ -1,113 +1,110 @@
-import { useState } from "react";
-import axios from "axios";
-import "./register.css";
+import { useState } from 'react';
+import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
+
+interface RegisterResponse {
+  success: boolean;
+  message?: string;
+  token?: string;
+  user?: {
+    id: number;
+    username: string;
+    email: string;
+  };
+}
 
 export default function Register() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [username, setUsername] = useState("");
-  const [message, setMessage] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
+  const navigate = useNavigate();
+  const [formData, setFormData] = useState({
+    username: '',
+    email: '',
+    password: '',
+    confirmPassword: ''
+  });
+  const [error, setError] = useState<string>('');
+  const [loading, setLoading] = useState(false);
 
-  const handleSubmit = async (e) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value
+    });
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setIsLoading(true);
+    setError('');
+
+    if (formData.password !== formData.confirmPassword) {
+      setError('Пароли не совпадают');
+      return;
+    }
+
+    setLoading(true);
 
     try {
-      await axios.post("http://localhost:8080/api/auth/register", {
-        email: email,
-        password: password,
-        username: username,
+      const response = await axios.post<RegisterResponse>('/api/register', {
+        username: formData.username,
+        email: formData.email,
+        password: formData.password
       });
 
-      const loginResponse = await axios.post("http://localhost:8080/api/auth/login", {
-        email: email,
-        password: password,
-      });
-
-      const token = loginResponse.data.access_token || loginResponse.data.token;
-
-      if (token && token !== 'undefined') {
-        document.cookie = `authToken=${token}; path=/; max-age=86400; SameSite=Lax`;
+      if (response.data.token) {
+        localStorage.setItem('token', response.data.token);
+        navigate('/');
       }
-
-      document.cookie = `username=${username}; path=/; max-age=86400; SameSite=Lax`;
-      document.cookie = `userEmail=${email}; path=/; max-age=86400; SameSite=Lax`;
-
-      setMessage({ type: "success", text: "🎉 Регистрация успешна!" });
-
-      setTimeout(() => {
-        window.location.href = "/profile";
-      }, 1500);
-
-    } catch (error) {
-      setMessage({ type: "error", text: "❌ " + (error.response?.data?.message || "Ошибка регистрации") });
+    } catch (err: unknown) {
+      if (axios.isAxiosError(err) && err.response?.data?.message) {
+        setError(err.response.data.message);
+      } else {
+        setError('Ошибка регистрации');
+      }
     } finally {
-      setIsLoading(false);
+      setLoading(false);
     }
   };
 
   return (
-    <div className="register-page">
-      <div className="glass-card">
-        <div className="card-bg"></div>
-        <div className="card-content">
-          <div className="logo">
-            <div className="logo-icon">🌟</div>
-            <h1>Создать аккаунт</h1>
-            <p>Присоединяйся к нам</p>
-          </div>
-
-          <form onSubmit={handleSubmit}>
-            <div className="input-field">
-              <span className="field-icon">👤</span>
-              <input
-                type="text"
-                placeholder="Имя пользователя"
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
-                required
-              />
-            </div>
-
-            <div className="input-field">
-              <span className="field-icon">📧</span>
-              <input
-                type="email"
-                placeholder="Email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
-              />
-            </div>
-
-            <div className="input-field">
-              <span className="field-icon">🔒</span>
-              <input
-                type="password"
-                placeholder="Пароль"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required
-              />
-            </div>
-
-            <button type="submit" className="glow-btn" disabled={isLoading}>
-              {isLoading ? "Регистрация..." : "Зарегистрироваться →"}
-            </button>
-
-            <div className="footer-link">
-              <a href="/login">↺ Уже есть аккаунт? Войти</a>
-            </div>
-          </form>
-
-          {message && (
-            <div className={`toast ${message.type}`}>
-              {message.text}
-            </div>
-          )}
-        </div>
-      </div>
+    <div className="register-container">
+      <form onSubmit={handleSubmit}>
+        <h2>Регистрация</h2>
+        {error && <div className="error">{error}</div>}
+        <input
+          type="text"
+          name="username"
+          placeholder="Имя пользователя"
+          value={formData.username}
+          onChange={handleChange}
+          required
+        />
+        <input
+          type="email"
+          name="email"
+          placeholder="Email"
+          value={formData.email}
+          onChange={handleChange}
+          required
+        />
+        <input
+          type="password"
+          name="password"
+          placeholder="Пароль"
+          value={formData.password}
+          onChange={handleChange}
+          required
+        />
+        <input
+          type="password"
+          name="confirmPassword"
+          placeholder="Подтвердите пароль"
+          value={formData.confirmPassword}
+          onChange={handleChange}
+          required
+        />
+        <button type="submit" disabled={loading}>
+          {loading ? 'Загрузка...' : 'Зарегистрироваться'}
+        </button>
+      </form>
     </div>
   );
 }

@@ -2,120 +2,43 @@ import axios from "axios";
 import { useState, useEffect } from "react";
 import "./Price.css";
 
+interface Subscription {
+  expires_at: string;
+  plan_name: string;
+}
+
+interface PriceData {
+  subscription: Subscription;
+}
+
 export default function Price() {
-  const [isLoading, setIsLoading] = useState(false);
-  const [subscription, setSubscription] = useState(null);
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [subscription, setSubscription] = useState<Subscription | null>(null);
+  const [loading, setLoading] = useState(true);
 
-  const getCookie = (name) => {
-    const value = `; ${document.cookie}`;
-    const parts = value.split(`; ${name}=`);
-    if (parts.length === 2) return parts.pop().split(';').shift();
-    return null;
-  };
-
-  // Проверка авторизации
   useEffect(() => {
-    const token = getCookie('authToken');
-    setIsAuthenticated(!!token && token !== 'undefined');
+    const fetchSubscription = async () => {
+      try {
+        const response = await axios.get<PriceData>('/api/subscription');
+        setSubscription(response.data.subscription);
+      } catch (error) {
+        console.error('Error fetching subscription:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
 
-    // Проверка текущей подписки пользователя
-    if (token) {
-      checkSubscription();
-    }
+    fetchSubscription();
   }, []);
 
-  // Проверка текущей подписки
-  const checkSubscription = async () => {
-    try {
-      const token = getCookie('authToken');
-      const response = await axios.get('http://localhost:8080/api/auth/subscription', {
-        headers: {
-          'Authorization': `Bearer ${token}`
-        }
-      });
-      setSubscription(response.data);
-    } catch (error) {
-      console.error('Error checking subscription:', error);
-    }
-  };
-
-  // Обработка оплаты для Premium
-  const handleSubscribe = async (planType) => {
-    if (!isAuthenticated) {
-      alert("Пожалуйста, войдите в аккаунт для оформления подписки");
-      window.location.href = "/login";
-      return;
-    }
-
-    setIsLoading(true);
-    try {
-      const token = getCookie('authToken');
-      const response = await axios.post('http://localhost:8080/api/auth/create-payment',
-        {
-          plan_type: planType,
-          success_url: window.location.origin + "/profile",
-          cancel_url: window.location.origin + "/price"
-        },
-        {
-          headers: {
-            'Authorization': `Bearer ${token}`,
-            'Content-Type': 'application/json'
-          }
-        }
-      );
-
-      if (response.data.payment_url) {
-        // Перенаправляем на страницу оплаты Stripe
-        window.location.href = response.data.payment_url;
-      } else {
-        alert("Ошибка создания платежа");
-      }
-    } catch (error) {
-      console.error("Payment error:", error);
-      alert(error.response?.data?.detail || "Ошибка при создании платежа");
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  // Обработка отмены подписки
-  const handleCancelSubscription = async () => {
-    if (!confirm("Вы уверены, что хотите отменить подписку?")) return;
-
-    setIsLoading(true);
-    try {
-      const token = getCookie('authToken');
-      await axios.post('http://localhost:8080/api/auth/cancel-subscription', {},
-        {
-          headers: {
-            'Authorization': `Bearer ${token}`
-          }
-        }
-      );
-      alert("Подписка успешно отменена");
-      await checkSubscription();
-    } catch (error) {
-      console.error("Cancel error:", error);
-      alert("Ошибка при отмене подписки");
-    } finally {
-      setIsLoading(false);
-    }
-  };
+  if (loading) {
+    return <div className="loading">Загрузка...</div>;
+  }
 
   return (
     <div className="pricing-container">
       <div className="pricing-header">
         <h1>Выберите тариф</h1>
         <p>Подходящий план для ваших задач</p>
-        {subscription && subscription.is_active && (
-          <div className="current-subscription">
-            🎉 Ваш текущий план: <strong>{subscription.plan_name}</strong>
-            {subscription.expires_at && (
-              <span> (до {new Date(subscription.expires_at).toLocaleDateString()})</span>
-            )}
-          </div>
-        )}
       </div>
 
       <div className="pricing-grid">
@@ -123,7 +46,7 @@ export default function Price() {
         <div className="pricing-card free">
           <div className="card-badge">Бесплатно</div>
           <div className="card-price">
-            <span className="currency">₽</span>
+            <span className="currency">$</span>
             <span className="amount">0</span>
             <span className="period">/месяц</span>
           </div>
@@ -138,20 +61,19 @@ export default function Price() {
             <li className="feature disabled">❌ История сообщений</li>
           </ul>
 
-          <button
-            className="btn-outline"
-            disabled={subscription?.plan_name === 'free' || isLoading}
-          >
-            {subscription?.plan_name === 'free' ? "Текущий план" : "Бесплатно"}
-          </button>
+          {subscription?.plan_name === 'free' ? (
+            <button className="btn-outline" disabled>Текущий план</button>
+          ) : (
+            <button className="btn-primary">Выбрать</button>
+          )}
         </div>
 
         {/* Premium Version */}
         <div className="pricing-card premium popular">
           <div className="card-badge">Популярный</div>
           <div className="card-price">
-            <span className="currency">₽</span>
-            <span className="amount">499</span>
+            <span className="currency">$</span>
+            <span className="amount">9.99</span>
             <span className="period">/месяц</span>
           </div>
           <h3>Premium Version</h3>
@@ -164,26 +86,14 @@ export default function Price() {
             <li className="feature">✅ Безлимит сообщений</li>
             <li className="feature">✅ История сообщений</li>
             <li className="feature">✅ Приоритетная поддержка</li>
-            <li className="feature">✅ Создание групп</li>
           </ul>
 
-          <button
-            className="btn-primary"
-            onClick={() => handleSubscribe('premium')}
-            disabled={subscription?.plan_name === 'premium' || isLoading}
-          >
-            {isLoading ? "Обработка..." : subscription?.plan_name === 'premium' ? "Текущий план" : "Начать 14-дневный триал"}
-          </button>
-
           {subscription?.plan_name === 'premium' && (
-            <button
-              className="btn-cancel"
-              onClick={handleCancelSubscription}
-              disabled={isLoading}
-            >
-              Отменить подписку
-            </button>
+            <div className="expires-info">
+              Действует до: {new Date(subscription.expires_at).toLocaleDateString()}
+            </div>
           )}
+          <button className="btn-primary">Начать 14-дневный триал</button>
         </div>
       </div>
     </div>

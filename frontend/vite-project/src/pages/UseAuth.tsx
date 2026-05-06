@@ -1,35 +1,55 @@
 import { useState, useEffect } from 'react';
+import axios from 'axios';
+
+interface User {
+  id: number;
+  username: string;
+  email: string;
+}
 
 export function useAuth() {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
 
-  const getCookie = (name) => {
-    const value = `; ${document.cookie}`;
-    const parts = value.split(`; ${name}=`);
-    if (parts.length === 2) return parts.pop().split(';').shift();
-    return null;
-  };
-
-  const checkAuth = () => {
-    const token = getCookie('authToken');
-    const username = getCookie('username');
-    const userId = getCookie('userId');
-
-    if (token && token !== 'undefined') {
-      setIsAuthenticated(true);
-      setUser({ username, userId });
-    } else {
-      setIsAuthenticated(false);
-      setUser(null);
-    }
-    setLoading(false);
-  };
-
   useEffect(() => {
+    const checkAuth = async () => {
+      try {
+        const token = localStorage.getItem('token');
+        if (token) {
+          const response = await axios.get<User>('/api/me', {
+            headers: { Authorization: `Bearer ${token}` }
+          });
+          setUser(response.data);
+        }
+      } catch (error) {
+        console.error('Auth error:', error);
+        localStorage.removeItem('token');
+      } finally {
+        setLoading(false);
+      }
+    };
+
     checkAuth();
   }, []);
 
-  return { isAuthenticated, user, loading };
+  const login = async (username: string, password: string) => {
+    try {
+      const response = await axios.post<{ token: string; user: User }>('/api/login', {
+        username,
+        password
+      });
+      localStorage.setItem('token', response.data.token);
+      setUser(response.data.user);
+      return { success: true };
+    } catch (error) {
+      return { success: false, error: 'Login failed' };
+    }
+  };
+
+  const logout = () => {
+    localStorage.removeItem('token');
+    setUser(null);
+  };
+
+  return { user, loading, login, logout };
 }
