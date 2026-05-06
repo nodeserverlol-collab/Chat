@@ -2,19 +2,32 @@ import { useState } from "react";
 import axios from "axios";
 import "./login.css";
 
-function Login() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [message, setMessage] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
+interface LoginResponse {
+  access_token?: string;
+  token?: string;
+  username: string;
+  user_id?: number;
+  id?: number;
+}
 
-  const handleSubmit = async (e) => {
+interface Message {
+  type: "success" | "error";
+  text: string;
+}
+
+function Login() {
+  const [email, setEmail] = useState<string>("");
+  const [password, setPassword] = useState<string>("");
+  const [message, setMessage] = useState<Message | null>(null);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setIsLoading(true);
-    setMessage("");
+    setMessage(null);
 
     try {
-      const loginResponse = await axios.post("http://localhost:8080/api/auth/login", {
+      const loginResponse = await axios.post<LoginResponse>("http://localhost:8080/api/auth/login", {
         email: email,
         password: password,
       });
@@ -35,11 +48,14 @@ function Login() {
         window.location.href = "/profile";
       }, 1500);
 
-    } catch (error) {
-      setMessage({
-        type: "error",
-        text: "❌ " + (error.response?.data?.detail || "Ошибка входа")
-      });
+    } catch (error: unknown) {
+      let errorText = "❌ Ошибка входа";
+
+      if (axios.isAxiosError(error) && error.response?.data?.detail) {
+        errorText = `❌ ${error.response.data.detail}`;
+      }
+
+      setMessage({ type: "error", text: errorText });
     } finally {
       setIsLoading(false);
     }
@@ -63,7 +79,7 @@ function Login() {
                 type="email"
                 placeholder="Email"
                 value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) => setEmail(e.target.value)}
                 required
               />
             </div>
@@ -74,7 +90,7 @@ function Login() {
                 type="password"
                 placeholder="Пароль"
                 value={password}
-                onChange={(e) => setPassword(e.target.value)}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) => setPassword(e.target.value)}
                 required
               />
             </div>

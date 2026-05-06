@@ -1,3 +1,4 @@
+// src/pages/profile.tsx
 import { useState, useEffect } from 'react';
 import { useAuth } from './useAuth';
 import axios from 'axios';

@@ -1,13 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-interface PricingPlan {
-  id: number;
-  name: string;
-  price: number;
-  features: string[];
-}
-
+// Убираем неиспользуемый интерфейс и переменную
 export default function Home() {
   const navigate = useNavigate();
   const [user, setUser] = useState<any>(null);
@@ -16,7 +10,6 @@ export default function Home() {
   useEffect(() => {
     const token = localStorage.getItem('token');
     if (token) {
-      // Fetch user data
       setUser({ username: 'User' });
     }
     setLoading(false);
@@ -53,8 +46,6 @@ export default function Home() {
     animateNumber(0, 100000, 2000, setMessagesCount);
     animateNumber(0, 500, 2000, setOnlineCount);
   }, []);
-
-  const pricingPlans: PricingPlan[] = []; // Убрал предупреждение
 
   if (loading) {
     return <div>Loading...</div>;
