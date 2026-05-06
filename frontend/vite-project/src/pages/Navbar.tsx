@@ -81,8 +81,8 @@ export default function Navbar() {
 
         <div className="nav-links">
           <NavLink href="/" isActive={isActive("/")}>Главная</NavLink>
-          <NavLink href="/about" isActive={isActive("/about")}>О нас</NavLink>
-          <NavLink href="/price" isActive={isActive("/price")}>Тарифы</NavLink>
+          <NavLink href="/Docs" isActive={isActive("/about")}>О нас</NavLink>
+          <NavLink href="/Price" isActive={isActive("/price")}>Тарифы</NavLink>
 
           {state.isAuthenticated && (
             <NavLink href="/chat" isActive={isActive("/chat")}>Чат</NavLink>
@@ -95,8 +95,8 @@ export default function Navbar() {
             />
           ) : (
             <>
-              <NavLink href="/login" className="login-link">Войти</NavLink>
-              <NavLink href="/register" className="register-link-nav">Регистрация</NavLink>
+              <NavLink href="/Login" className="login-link">Войти</NavLink>
+              <NavLink href="/Register" className="register-link-nav">Регистрация</NavLink>
             </>
           )}
         </div>
