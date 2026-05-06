@@ -1,0 +1,185 @@
+/* Navbar.css - чистый стиль без emoji */
+.navbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  background: rgba(10, 10, 10, 0.95);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  z-index: 9999;
+}
+
+.nav-container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 16px 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.nav-logo a {
+  font-size: 1.5rem;
+  font-weight: 700;
+  background: linear-gradient(135deg, #4f9eff, #6c5ce7);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  text-decoration: none;
+  transition: all 0.3s ease;
+}
+
+.nav-logo a:hover {
+  opacity: 0.8;
+}
+
+.nav-links {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.nav-links a {
+  color: #e0e0e0;
+  text-decoration: none;
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+.nav-links a:hover {
+  color: #4f9eff;
+  background: rgba(79, 158, 255, 0.1);
+}
+
+.nav-links a.active {
+  color: #4f9eff;
+  background: rgba(79, 158, 255, 0.15);
+}
+
+/* Кнопка входа */
+.login-link {
+  background: transparent;
+  border: 1px solid #333;
+}
+
+.login-link:hover {
+  border-color: #4f9eff;
+}
+
+/* Кнопка регистрации */
+.register-link-nav {
+  background: linear-gradient(135deg, #4f9eff, #6c5ce7);
+  color: white !important;
+}
+
+.register-link-nav:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(79, 158, 255, 0.3);
+  color: white !important;
+}
+
+/* Профиль с выпадающим меню */
+.profile-dropdown {
+  position: relative;
+}
+
+.profile-btn {
+  background: rgba(79, 158, 255, 0.1);
+  border: 1px solid rgba(79, 158, 255, 0.3);
+  color: #4f9eff;
+  padding: 8px 20px;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.profile-btn:hover {
+  background: rgba(79, 158, 255, 0.2);
+  transform: translateY(-1px);
+}
+
+.dropdown-menu {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  margin-top: 8px;
+  background: #1e1e1e;
+  border: 1px solid #333;
+  border-radius: 12px;
+  min-width: 180px;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-10px);
+  transition: all 0.2s ease;
+  z-index: 1000;
+}
+
+.profile-dropdown:hover .dropdown-menu {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+.dropdown-menu a {
+  display: block;
+  padding: 10px 16px;
+  color: #e0e0e0;
+  text-decoration: none;
+  font-size: 0.9rem;
+}
+
+.dropdown-menu a:hover {
+  background: rgba(79, 158, 255, 0.1);
+  color: #4f9eff;
+}
+
+.dropdown-menu hr {
+  margin: 8px 0;
+  border: none;
+  border-top: 1px solid #333;
+}
+
+.dropdown-logout {
+  width: 100%;
+  text-align: left;
+  padding: 10px 16px;
+  background: none;
+  border: none;
+  color: #ff4757;
+  font-size: 0.9rem;
+  cursor: pointer;
+  border-radius: 0 0 12px 12px;
+}
+
+.dropdown-logout:hover {
+  background: rgba(255, 71, 87, 0.1);
+}
+
+/* Адаптивность */
+@media (max-width: 768px) {
+  .nav-container {
+    flex-direction: column;
+    gap: 12px;
+    padding: 12px 20px;
+  }
+
+  .nav-links {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .dropdown-menu {
+    position: fixed;
+    top: auto;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    border-radius: 20px 20px 0 0;
+  }
+}

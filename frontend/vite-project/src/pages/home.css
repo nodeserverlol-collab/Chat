@@ -1,0 +1,592 @@
+/* Home.css - Современный дизайн с карточками */
+.home {
+  min-height: calc(100vh - 80px);
+  background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 100%);
+  overflow-x: hidden;
+}
+
+/* Hero Section */
+.hero {
+  text-align: center;
+  padding: 80px 20px;
+  position: relative;
+}
+
+.hero-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 16px;
+  background: rgba(79, 158, 255, 0.1);
+  border-radius: 30px;
+  font-size: 0.875rem;
+  color: #4f9eff;
+  margin-bottom: 24px;
+  border: 1px solid rgba(79, 158, 255, 0.2);
+}
+
+.badge-dot {
+  width: 8px;
+  height: 8px;
+  background: #4f9eff;
+  border-radius: 50%;
+  display: inline-block;
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.5;
+    transform: scale(1.2);
+  }
+}
+
+.hero-title {
+  font-size: 4rem;
+  font-weight: 800;
+  margin-bottom: 24px;
+  color: white;
+}
+
+.hero-title-gradient {
+  background: linear-gradient(135deg, #4f9eff, #a855f7);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  display: inline-block;
+}
+
+.hero-description {
+  font-size: 1.25rem;
+  color: #a0a0a0;
+  max-width: 600px;
+  margin: 0 auto 32px;
+  line-height: 1.6;
+}
+
+.hero-buttons {
+  display: flex;
+  gap: 16px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, #4f9eff, #6c5ce7);
+  color: white;
+  border: none;
+  padding: 12px 32px;
+  border-radius: 12px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(79, 158, 255, 0.4);
+}
+
+.btn-secondary {
+  background: transparent;
+  color: #e0e0e0;
+  border: 1px solid #333;
+  padding: 12px 32px;
+  border-radius: 12px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.btn-secondary:hover {
+  border-color: #4f9eff;
+  color: #4f9eff;
+  background: rgba(79, 158, 255, 0.05);
+  transform: translateY(-2px);
+}
+
+/* Stats Section */
+.stats-section {
+  display: flex;
+  justify-content: center;
+  gap: 40px;
+  padding: 60px 20px;
+  flex-wrap: wrap;
+  background: rgba(0, 0, 0, 0.3);
+}
+
+.stat-card {
+  text-align: center;
+  padding: 24px;
+  min-width: 180px;
+}
+
+.stat-number {
+  font-size: 3rem;
+  font-weight: 800;
+  background: linear-gradient(135deg, #4f9eff, #a855f7);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: 8px;
+}
+
+.stat-label {
+  color: #888;
+  font-size: 0.875rem;
+}
+
+/* Features Section */
+.features-section {
+  padding: 80px 20px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.section-title {
+  text-align: center;
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin-bottom: 16px;
+  color: white;
+}
+
+.gradient-text {
+  background: linear-gradient(135deg, #4f9eff, #a855f7);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.section-subtitle {
+  text-align: center;
+  color: #888;
+  margin-bottom: 48px;
+  font-size: 1.125rem;
+}
+
+.features-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 30px;
+}
+
+.feature-card {
+  background: rgba(255, 255, 255, 0.03);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 20px;
+  padding: 32px;
+  transition: all 0.3s ease;
+}
+
+.feature-card:hover {
+  transform: translateY(-5px);
+  border-color: rgba(79, 158, 255, 0.3);
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.feature-icon {
+  font-size: 3rem;
+  margin-bottom: 20px;
+}
+
+.feature-card h3 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin-bottom: 12px;
+  color: white;
+}
+
+.feature-card p {
+  color: #a0a0a0;
+  line-height: 1.6;
+}
+
+/* Pricing Section */
+.pricing-section {
+  padding: 80px 20px;
+  background: rgba(0, 0, 0, 0.3);
+}
+
+.pricing-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 30px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.pricing-card {
+  background: rgba(255, 255, 255, 0.03);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 20px;
+  padding: 32px;
+  position: relative;
+  transition: all 0.3s ease;
+  display: flex;
+  flex-direction: column;
+}
+
+.pricing-card:hover {
+  transform: translateY(-5px);
+  border-color: rgba(79, 158, 255, 0.3);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+}
+
+.pricing-card.popular {
+  border: 2px solid #4f9eff;
+  transform: scale(1.02);
+  background: rgba(79, 158, 255, 0.05);
+}
+
+.pricing-card.popular:hover {
+  transform: scale(1.03) translateY(-5px);
+}
+
+.popular-badge {
+  position: absolute;
+  top: -12px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: linear-gradient(135deg, #4f9eff, #a855f7);
+  padding: 6px 16px;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: white;
+  white-space: nowrap;
+}
+
+.plan-name {
+  font-size: 1.5rem;
+  font-weight: 700;
+  text-align: center;
+  margin-bottom: 24px;
+  color: white;
+}
+
+.plan-price {
+  text-align: center;
+  margin-bottom: 24px;
+}
+
+.currency {
+  font-size: 1.5rem;
+  vertical-align: top;
+  color: #4f9eff;
+}
+
+.amount {
+  font-size: 3rem;
+  font-weight: 800;
+  color: #4f9eff;
+}
+
+.period {
+  font-size: 0.875rem;
+  color: #888;
+}
+
+.plan-features {
+  list-style: none;
+  margin-bottom: 32px;
+  flex-grow: 1;
+}
+
+.plan-features li {
+  padding: 10px 0;
+  color: #ccc;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.plan-features li:last-child {
+  border-bottom: none;
+}
+
+.check {
+  color: #4caf50;
+  font-weight: bold;
+  font-size: 1.1rem;
+}
+
+/* Кнопки в карточках */
+.plan-btn {
+  width: 100%;
+  padding: 14px 24px;
+  border-radius: 12px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-top: auto;
+  text-align: center;
+}
+
+/* Кнопка для Free плана */
+.pricing-card:not(.popular) .plan-btn {
+  background: transparent;
+  border: 1px solid #4f9eff;
+  color: #4f9eff;
+}
+
+.pricing-card:not(.popular) .plan-btn:hover {
+  background: rgba(79, 158, 255, 0.1);
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(79, 158, 255, 0.2);
+}
+
+/* Кнопка для Premium плана */
+.pricing-card.popular .plan-btn {
+  background: linear-gradient(135deg, #4f9eff, #6c5ce7);
+  border: none;
+  color: white;
+}
+
+.pricing-card.popular .plan-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(79, 158, 255, 0.4);
+}
+
+/* Кнопка для Team плана */
+.pricing-card:last-child .plan-btn {
+  background: transparent;
+  border: 1px solid #a855f7;
+  color: #a855f7;
+}
+
+.pricing-card:last-child .plan-btn:hover {
+  background: rgba(168, 85, 247, 0.1);
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(168, 85, 247, 0.2);
+}
+
+/* CTA Section */
+.cta-section {
+  padding: 80px 20px;
+  text-align: center;
+}
+
+.cta-content {
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.cta-content h2 {
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin-bottom: 16px;
+  color: white;
+}
+
+.cta-content p {
+  color: #a0a0a0;
+  margin-bottom: 32px;
+}
+
+.cta-btn {
+  background: linear-gradient(135deg, #4f9eff, #a855f7);
+  color: white;
+  border: none;
+  padding: 14px 48px;
+  border-radius: 12px;
+  font-size: 1.125rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.cta-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 25px rgba(79, 158, 255, 0.4);
+}
+
+/* Адаптивность */
+@media (max-width: 768px) {
+  .hero-title {
+    font-size: 2rem;
+  }
+
+  .hero-description {
+    font-size: 1rem;
+  }
+
+  .section-title {
+    font-size: 1.75rem;
+  }
+
+  .features-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .pricing-grid {
+    grid-template-columns: 1fr;
+    gap: 40px;
+  }
+
+  .pricing-card.popular {
+    transform: scale(1);
+  }
+
+  .pricing-card.popular:hover {
+    transform: translateY(-5px);
+  }
+
+  .stats-section {
+    gap: 20px;
+  }
+
+  .stat-number {
+    font-size: 2rem;
+  }
+
+  .plan-name {
+    font-size: 1.25rem;
+  }
+
+  .amount {
+    font-size: 2.5rem;
+  }
+
+  .plan-btn {
+    padding: 12px 20px;
+    font-size: 0.875rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .hero {
+    padding: 40px 16px;
+  }
+
+  .hero-title {
+    font-size: 1.5rem;
+  }
+
+  .btn-primary, .btn-secondary {
+    padding: 10px 20px;
+    font-size: 0.875rem;
+  }
+
+  .feature-card {
+    padding: 24px;
+  }
+
+  .pricing-card {
+    padding: 24px;
+  }
+}
+
+/* Анимации */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.feature-card, .pricing-card, .stat-card {
+  animation: fadeInUp 0.6s ease forwards;
+}
+
+/* Hover эффекты для карточек */
+.pricing-card {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.pricing-card .plan-btn {
+  position: relative;
+  overflow: hidden;
+}
+
+.pricing-card .plan-btn::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.3);
+  transform: translate(-50%, -50%);
+  transition: width 0.6s, height 0.6s;
+}
+
+.pricing-card .plan-btn:active::before {
+  width: 300px;
+  height: 300px;
+}
+/* CTA Section */
+.cta-section {
+  padding: 80px 20px;
+  text-align: center;
+}
+
+.cta-content {
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.cta-content h2 {
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin-bottom: 16px;
+  color: white;
+}
+
+.cta-content p {
+  color: #a0a0a0;
+  margin-bottom: 32px;
+  font-size: 1.125rem;
+}
+
+.cta-btn {
+  background: linear-gradient(135deg, #4f9eff, #a855f7);
+  color: white;
+  border: none;
+  padding: 14px 48px;
+  border-radius: 12px;
+  font-size: 1.125rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.cta-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 25px rgba(79, 158, 255, 0.4);
+}
+
+.cta-btn:active {
+  transform: translateY(0);
+}
+
+/* Адаптив для CTA */
+@media (max-width: 768px) {
+  .cta-content h2 {
+    font-size: 1.75rem;
+  }
+
+  .cta-content p {
+    font-size: 1rem;
+  }
+
+  .cta-btn {
+    padding: 12px 32px;
+    font-size: 1rem;
+  }
+}
