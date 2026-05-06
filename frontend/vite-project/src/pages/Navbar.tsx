@@ -2,47 +2,75 @@ import { useEffect, useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import "./Navbar.css";
 
+// Интерфейс для состояния навбара
+interface NavbarState {
+  isAuthenticated: boolean;
+  username: string;
+}
+
+// Интерфейс для cookie
+interface CookieOptions {
+  name: string;
+  value?: string;
+  expires?: string;
+  path?: string;
+}
+
 export default function Navbar() {
   const navigate = useNavigate();
   const location = useLocation();
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [username, setUsername] = useState("");
+  const [state, setState] = useState<NavbarState>({
+    isAuthenticated: false,
+    username: ""
+  });
 
-  const getCookie = (name) => {
+  // Дженерик для получения куки
+  const getCookie = <T extends string>(name: T): string | null => {
     const value = `; ${document.cookie}`;
     const parts = value.split(`; ${name}=`);
-    if (parts.length === 2) return parts.pop().split(';').shift();
+    if (parts.length === 2) {
+      const result = parts.pop()?.split(';').shift();
+      return result || null;
+    }
     return null;
   };
 
-  const checkAuth = () => {
-    const token = getCookie('authToken');
-    const user = getCookie('username');
-    if (token && token !== 'undefined') {
-      setIsAuthenticated(true);
-      setUsername(user || "");
-    } else {
-      setIsAuthenticated(false);
-      setUsername("");
-    }
+  // Установка куки с опциями
+  const setCookie = ({ name, value, expires, path = "/" }: CookieOptions): void => {
+    document.cookie = `${name}=${value || ""}; expires=${expires || ""}; path=${path}`;
   };
 
-  const handleLogout = () => {
-    document.cookie = "authToken=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-    document.cookie = "username=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-    document.cookie = "userEmail=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-    document.cookie = "userId=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-    setIsAuthenticated(false);
+  // Удаление куки
+  const removeCookie = (name: string): void => {
+    setCookie({ name, expires: "Thu, 01 Jan 1970 00:00:00 UTC" });
+  };
+
+  // Проверка авторизации
+  const checkAuth = (): void => {
+    const token = getCookie('authToken');
+    const user = getCookie('username');
+
+    setState({
+      isAuthenticated: !!(token && token !== 'undefined'),
+      username: user || ""
+    });
+  };
+
+  // Выход из аккаунта
+  const handleLogout = (): void => {
+    ['authToken', 'username', 'userEmail', 'userId'].forEach(removeCookie);
+    setState({ isAuthenticated: false, username: "" });
     navigate("/");
   };
+
+  // Проверка активного пути
+  const isActive = (path: string): boolean => location.pathname === path;
 
   useEffect(() => {
     checkAuth();
     const interval = setInterval(checkAuth, 1000);
     return () => clearInterval(interval);
   }, []);
-
-  const isActive = (path) => location.pathname === path;
 
   return (
     <nav className="navbar">
@@ -52,42 +80,23 @@ export default function Navbar() {
         </div>
 
         <div className="nav-links">
-          <a href="/" className={isActive("/") ? "active" : ""}>
-            Главная
-          </a>
-          <a href="/Docs" className={isActive("/about") ? "active" : ""}>
-            О нас
-          </a>
-          <a href="/price" className={isActive("/price") ? "active" : ""}>
-            Тарифы
-          </a>
+          <NavLink href="/" isActive={isActive("/")}>Главная</NavLink>
+          <NavLink href="/about" isActive={isActive("/about")}>О нас</NavLink>
+          <NavLink href="/price" isActive={isActive("/price")}>Тарифы</NavLink>
 
-          {isAuthenticated && (
-            <a href="/chat" className={isActive("/chat") ? "active" : ""}>
-              Чат
-            </a>
+          {state.isAuthenticated && (
+            <NavLink href="/chat" isActive={isActive("/chat")}>Чат</NavLink>
           )}
 
-          {isAuthenticated ? (
-            <>
-              <div className="profile-dropdown">
-                <button className="profile-btn">
-                  {username || "Профиль"}
-                </button>
-                <div className="dropdown-menu">
-                  <a href="/profile">Мой профиль</a>
-                  <a href="/settings">Настройки</a>
-                  <hr />
-                  <button onClick={handleLogout} className="dropdown-logout">
-                    Выйти
-                  </button>
-                </div>
-              </div>
-            </>
+          {state.isAuthenticated ? (
+            <ProfileDropdown
+              username={state.username}
+              onLogout={handleLogout}
+            />
           ) : (
             <>
-              <a href="/login" className="login-link">Войти</a>
-              <a href="/register" className="register-link-nav">Регистрация</a>
+              <NavLink href="/login" className="login-link">Войти</NavLink>
+              <NavLink href="/register" className="register-link-nav">Регистрация</NavLink>
             </>
           )}
         </div>
@@ -95,3 +104,46 @@ export default function Navbar() {
     </nav>
   );
 }
+
+// Компонент для ссылок навигации
+interface NavLinkProps {
+  href: string;
+  children: React.ReactNode;
+  isActive?: boolean;
+  className?: string;
+}
+
+const NavLink: React.FC<NavLinkProps> = ({ href, children, isActive, className }) => (
+  <a
+    href={href}
+    className={`${className || ""} ${isActive ? "active" : ""}`.trim()}
+  >
+    {children}
+  </a>
+);
+
+// Компонент выпадающего меню профиля
+interface ProfileDropdownProps {
+  username: string;
+  onLogout: () => void;
+}
+
+const ProfileDropdown: React.FC<ProfileDropdownProps> = ({ username, onLogout }) => (
+  <div className="profile-dropdown">
+    <button className="profile-btn" type="button">
+      {username || "Профиль"}
+    </button>
+    <div className="dropdown-menu">
+      <a href="/profile">Мой профиль</a>
+      <a href="/settings">Настройки</a>
+      <hr />
+      <button
+        onClick={onLogout}
+        className="dropdown-logout"
+        type="button"
+      >
+        Выйти
+      </button>
+    </div>
+  </div>
+);
