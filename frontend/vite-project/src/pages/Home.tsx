@@ -14,15 +14,6 @@ interface Feature {
   description: string;
 }
 
-interface PricingPlan {
-  name: string;
-  price: string;
-  period: string;
-  features: string[];
-  buttonText: string;
-  popular: boolean;
-}
-
 export default function Home() {
   const navigate = useNavigate();
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
@@ -102,32 +93,7 @@ export default function Home() {
     }
   ];
 
-  const pricingPlans: PricingPlan[] = [
-    {
-      name: "Free",
-      price: "0",
-      period: "месяц",
-      features: ["Базовый чат", "100 сообщений/день", "1 комната", "Базовая поддержка"],
-      buttonText: "Начать",
-      popular: false
-    },
-    {
-      name: "Premium",
-      price: "499",
-      period: "месяц",
-      features: ["Неограниченный чат", "Безлимит сообщений", "Неограниченно комнат", "Приоритетная поддержка", "История сообщений", "Создание групп"],
-      buttonText: "Попробовать 14 дней",
-      popular: true
-    },
-    {
-      name: "Team",
-      price: "999",
-      period: "месяц",
-      features: ["Все Premium возможности", "Админ-панель", "API доступ", "Аналитика", "Интеграции", "SLA поддержка"],
-      buttonText: "Связаться с нами",
-      popular: false
-    }
-  ];
+  // pricingPlans полностью удален, так как не используется
 
   const handleGetStarted = (): void => {
     if (isAuthenticated) {
