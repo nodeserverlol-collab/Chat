@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { useAuth } from './useAuth';
+import { useAuth } from './useAuth'; // Убедитесь, что файл существует
 
 interface Message {
   id: number;
@@ -9,7 +9,7 @@ interface Message {
 }
 
 export default function Chat() {
-  const { user } = useAuth();
+  const { user, loading } = useAuth();
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState('');
   const [ws, setWs] = useState<WebSocket | null>(null);
@@ -24,7 +24,7 @@ export default function Chat() {
 
     websocket.onmessage = (event) => {
       const data = JSON.parse(event.data);
-      setMessages((prev) => [...prev, data]);
+      setMessages((prev: Message[]) => [...prev, data]);
     };
 
     setWs(websocket);
@@ -40,7 +40,7 @@ export default function Chat() {
 
   const sendMessage = (e: React.FormEvent) => {
     e.preventDefault();
-    if (input.trim() && ws?.readyState === WebSocket.OPEN && user) {
+    if (input.trim() && ws && ws.readyState === WebSocket.OPEN && user) {
       ws.send(JSON.stringify({
         username: user.username,
         content: input,
@@ -49,6 +49,9 @@ export default function Chat() {
       setInput('');
     }
   };
+
+  if (loading) return <div>Загрузка...</div>;
+  if (!user) return <div>Пожалуйста, войдите в систему</div>;
 
   return (
     <div className="chat-container">
@@ -61,11 +64,12 @@ export default function Chat() {
         ))}
         <div ref={messagesEndRef} />
       </div>
+
       <form onSubmit={sendMessage}>
         <input
           type="text"
           value={input}
-          onChange={(e) => setInput(e.target.value)}
+          onChange={(e: React.ChangeEvent<HTMLInputElement>) => setInput(e.target.value)}
           placeholder="Введите сообщение..."
         />
         <button type="submit">Отправить</button>
