@@ -7,10 +7,10 @@ load_dotenv()
 
 STRIPE_API_KEY = os.getenv("STRIPE_API_KEY")
 
-# Проверка наличия ключа (опционально, можно закомментировать на время тестов)
+
 if not STRIPE_API_KEY:
     print("⚠️ Warning: STRIPE_API_KEY not found in .env file")
-    # Не выкидываем ошибку, чтобы код работал без Stripe
+
 else:
     stripe.api_key = STRIPE_API_KEY
 
@@ -22,9 +22,6 @@ def create_link_stripe(
         success_url: str = "http://localhost:8000/success",
         cancel_url: str = "http://localhost:8000/cancel"
 ) -> Optional[str]:
-    """
-    Создание ссылки на оплату через Stripe
-    """
     if not STRIPE_API_KEY:
         print("❌ Stripe API key not configured")
         return None
